@@ -1,0 +1,187 @@
+aplikasi yg perlu di install
+postgresql
+Dbeaver(database management)
+postman(test parameters)
+buat folder project back-end
+
+jalankan init di dalam folder project
+npm init -y
+
+cara untuk install library ke dalam devDependencies:
+npm i nodemon --save-dev
+npm i sequelize-cli --save-dev
+
+cara untuk install library ke dalam dependencies:
+npm i express
+npm i pg
+npm i sequelize
+npm i cors
+npm i dotenv
+npm i ejs
+
+buat file app.js
+touch app.js
+
+buat file gitignore
+touch .gitignore
+
+isi file gitignore
+node_modules
+package-lock.json
+
+cara menjalankan project back-end
+npm start
+
+1. buat init terlebih dahulu
+npx sequelize-cli init (memunculkan folder config, migrations, models, seeders)
+
+lakukan perubahan pada file config.json di dalam folder config
+"development": {
+    "username": "postgres",
+    "password": "123456",
+    "database": "DBfruit-store",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dialect": "postgres"
+}
+
+lakukan perubahan pada file package.json
+"scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+2. buat database
+npx sequelize-cli db:create
+
+3. buat _model_ (note utk nama tabel ber hurup kecil, tdk memberi nama berujung jamak(users), nama tabel nya jangan berbentuk jamak)
+
+--- ini latihan-backend ---
+npx sequelize-cli model:generate --name admin --attributes nameAdm:string,emailAdm:string,passwordAdm:integer,imageAdm:string
+npx sequelize-cli model:generate --name item --attributes nameItm:string,stockItm:integer,priceItm:integer,imageItm:string
+npx sequelize-cli model:generate --name customer --attributes nameCus:string,alamatCus:string,tlpCus:integer
+npx sequelize-cli model:generate --name transaksi --attributes idAdm:integer,idCus:integer,tgl_transaksi:string,total_transaksi:integer
+npx sequelize-cli model:generate --name dttransaksi --attributes idTra:integer,idItm:integer,jumlahItm:integer,total_bayar:integer
+
+--- repo-bae ---
+npx sequelize-cli model:generate --name product --attributes name:string,image:string,price:integer,stock:integer,userId:integer,brandId:integer
+npx sequelize-cli model:generate --name user --attributes name:string,email:string,password:string,image:string
+npx sequelize-cli model:generate --name brand --attributes name:string,city:string,total_employees:integer,image:string
+
+
+4. migrate (utk memasukan tabel-tabel ke database)
+npx sequelize-cli db:migrate
+
+buat folder routes
+mkdir routes
+
+buat files di dalam folder routes
+touch index.js
+touch item.js
+touch user.js
+
+buat folder controllers
+mkdir controllers
+
+buat files di dalam folder controllers
+touch FruitController.js
+touch CategoryController.js
+touch BrandController.js
+
+undo migrate
+npx sequelize-cli db:migrate:undo:all
+
+rubah file di models dan migrations
+
+npx sequelize-cli db:migrate
+
+5. cek di Dbeaver
+
+
+## seeding a json (utk memasukan data yg telah kita miliki sebelumnya ke database )
+
+1. generate file seeder
+npx sequelize-cli seed:generate --name seeder-user
+npx sequelize-cli seed:generate --name seeder-Items
+
+npx sequelize-cli seed:generate --name seeder-fruits
+
+2. untuk menjalankan seeder
+
+a. seed all
+npx sequelize-cli db:seed:all
+
+b. seed 1 file
+npx sequelize-cli db:seed --seed nama_file.js
+
+c. undo seed all
+npx sequelize-cli db:seed:undo:all
+
+d. undo 1 seed
+npx sequelize-cli db:seed:undo --seed nama_file.js
+
+
+membuat proses login
+npm i jsonwebtoken bcrypt 
+
+
+
+
+http://localhost:3000/users/create/?username=bobby&email=bobby1@email.com&password=1111&image=http://via.placeholder.com/150
+
+
+https://dbdiagram.io/d
+https://react-icons.github.io/react-icons/icons?name=ai
+https://getbootstrap.com/docs/5.3/components/navbar/
+https://fonts.google.com/specimen/Ubuntu
+https://mycolor.space/?hex=%23845EC2&sub=1
+https://getbootstrap.com/docs/5.0/content/tables/
+https://formik.org/
+https://sequelize.org/docs/v6/core-concepts/assocs/
+
+
+database name: db_store_simple
+table admin {
+  idAdm integer
+  nameAdm string
+  emailAdm string
+  passwordAdm integer
+  imageAdm string
+}
+
+table item {
+  idItm integer
+  nameItm string
+  stockItm integer
+  priceItm integer
+  tgl_masukItm timestamp
+  imageItm string
+}
+
+table customer {
+  idCus integer
+  nameCus string
+  alamatCus string
+  tlpCus integer
+}
+
+table transaksi {
+  idTra integer
+  idAdm integer
+  idCus integer
+  tgl_transaksi timestamp
+  total_transaksi integer
+}
+
+table dttransaksi {
+  idDttra integer
+  idTra integer
+  idItm integer
+  jumlahItm integer
+  total_bayar integer
+}
+
+ref: transaksi.idAdm > admin.idAdm
+ref: transaksi.idCus > customer.idCus
+ref: transaksi.idTra < dttransaksi.idTra
+ref: dttransaksi.idItm > item.idItm
